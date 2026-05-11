@@ -677,9 +677,9 @@ export function calculateSameDayDistanceGroups(items: Shipment[]): SameDayDistan
   }
 
   return out.sort((a, b) => {
-    const dateDiff = b.acceptanceDayTs - a.acceptanceDayTs;
-    if (dateDiff !== 0) return dateDiff;
-    return b.count - a.count;
+    const stationDiff = a.senderStation.localeCompare(b.senderStation);
+    if (stationDiff !== 0) return stationDiff;
+    return b.acceptanceDayTs - a.acceptanceDayTs;
   });
 }
 

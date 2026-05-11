@@ -4,10 +4,10 @@ import { useMemo, useState } from 'react';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
   LineChart, Line, Legend, Cell,
-  ReferenceLine,
+  ReferenceLine, LabelList,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Maximize2, X } from 'lucide-react';
+import { Maximize2, X, Printer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { SameDayDistanceGroup, DeliveryTimeEntry, DeliveryPeriodAggregate } from '@/lib/types';
 
@@ -192,6 +192,14 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
           {wagonBarData.map((d, i) => (
             <Cell key={i} fill={d.color} />
           ))}
+          <LabelList 
+            dataKey="transitDays" 
+            position="insideRight" 
+            formatter={(val: number) => `${val.toFixed(1)} kun`} 
+            fill="#fff" 
+            fontSize={12} 
+            fontWeight="bold" 
+          />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -262,6 +270,14 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
           {senderAgg.map((d, i) => (
             <Cell key={i} fill={d.color} />
           ))}
+          <LabelList 
+            dataKey="avgDays" 
+            position="insideRight" 
+            formatter={(val: number) => `${val.toFixed(2)} kun`} 
+            fill="#fff" 
+            fontSize={12} 
+            fontWeight="bold" 
+          />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -331,15 +347,47 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
     );
   };
 
-  // Fullscreen button component
-  const FullscreenBtn = ({ chartId }: { chartId: string }) => (
-    <button
-      onClick={(e) => { e.stopPropagation(); setFullscreenChart(chartId); }}
-      className="size-7 rounded-md bg-muted/80 hover:bg-accent flex items-center justify-center transition-colors text-muted-foreground hover:text-foreground"
-      title="Kattalashtirish"
-    >
-      <Maximize2 className="size-3.5" />
-    </button>
+  // Chop etish funksiyasi
+  const handlePrint = (chartId: string) => {
+    const el = document.getElementById(`print-chart-${chartId}`);
+    if (!el) return;
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @media print {
+        body * { visibility: hidden !important; }
+        #print-chart-${chartId}, #print-chart-${chartId} * { visibility: visible !important; }
+        #print-chart-${chartId} { 
+          position: absolute !important; 
+          left: 0 !important; 
+          top: 0 !important; 
+          width: 100vw !important; 
+          height: auto !important; 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    window.print();
+    setTimeout(() => { document.head.removeChild(style); }, 500);
+  };
+
+  // Fullscreen va Chop etish tugmalari
+  const ActionBtns = ({ chartId }: { chartId: string }) => (
+    <div className="flex items-center gap-1.5">
+      <button
+        onClick={(e) => { e.stopPropagation(); handlePrint(chartId); }}
+        className="size-7 rounded-md bg-muted/80 hover:bg-accent flex items-center justify-center transition-colors text-muted-foreground hover:text-foreground"
+        title="Chop etish"
+      >
+        <Printer className="size-3.5" />
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); setFullscreenChart(chartId); }}
+        className="size-7 rounded-md bg-muted/80 hover:bg-accent flex items-center justify-center transition-colors text-muted-foreground hover:text-foreground"
+        title="Kattalashtirish"
+      >
+        <Maximize2 className="size-3.5" />
+      </button>
+    </div>
   );
 
   return (
@@ -355,11 +403,11 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
                   {group.senderStation} → {group.destStation} | {group.acceptanceDay} | {group.count} ta
                 </span>
               </CardTitle>
-              <FullscreenBtn chartId="wagon" />
+              <ActionBtns chartId="wagon" />
             </div>
           </CardHeader>
           <CardContent>
-            <div style={{ height: Math.max(300, group.count * 36) }}>
+            <div id="print-chart-wagon" style={{ height: Math.max(300, group.count * 36) }}>
               {renderWagonChart(Math.max(300, group.count * 36))}
             </div>
 
@@ -383,11 +431,11 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
                 Jo'natuvchi firmalar bo'yicha
                 <span className="text-xs text-muted-foreground font-normal ml-2">rang = jo'natuvchi</span>
               </CardTitle>
-              <FullscreenBtn chartId="sender" />
+              <ActionBtns chartId="sender" />
             </div>
           </CardHeader>
           <CardContent>
-            <div style={{ height: Math.max(200, senderAgg.length * 44) }}>
+            <div id="print-chart-sender" style={{ height: Math.max(200, senderAgg.length * 44) }}>
               {renderSenderChart()}
             </div>
           </CardContent>
@@ -403,11 +451,11 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
                   {group.senderStation} → {group.destStation}
                 </span>
               </CardTitle>
-              <FullscreenBtn chartId="period" />
+              <ActionBtns chartId="period" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="h-[280px]">
+            <div id="print-chart-period" className="h-[280px]">
               {periodChartData.length > 0 ? (
                 renderPeriodChart()
               ) : (
@@ -429,11 +477,11 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
                   {group.senderStation} → {group.destStation} | rang = jo'natuvchi
                 </span>
               </CardTitle>
-              <FullscreenBtn chartId="sender_dynamics" />
+              <ActionBtns chartId="sender_dynamics" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="h-[350px]">
+            <div id="print-chart-sender_dynamics" className="h-[350px]">
               {senderDynamicsData.length > 0 ? (
                 renderSenderDynamicsChart()
               ) : (

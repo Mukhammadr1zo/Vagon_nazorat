@@ -52,7 +52,7 @@ export default function DeliveryTimePage() {
       }
     }
     return Array.from(routeMap.entries())
-      .sort((a, b) => b[1].count - a[1].count)
+      .sort((a, b) => a[0].localeCompare(b[0]))
       .map(([routeKey, data]) => ({ routeKey, ...data }));
   }, [sameDayDistanceGroups]);
 

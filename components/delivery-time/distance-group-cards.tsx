@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { ArrowRight, Users, ChevronDown, ChevronUp, Train } from 'lucide-react';
+import { ArrowRight, Users, ChevronDown, ChevronUp, Train, Search } from 'lucide-react';
 import type { SameDayDistanceGroup } from '@/lib/types';
 
 interface Props {
@@ -48,35 +48,69 @@ export function DistanceGroupCards({ groups, uniqueRoutes, selectedGroup, onSele
     return routeColors[idx % routeColors.length];
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Routes filtered by search query
+  const filteredRoutes = useMemo(() => {
+    if (!searchQuery.trim()) return uniqueRoutes;
+    const q = searchQuery.toLowerCase();
+    return uniqueRoutes.filter(r => 
+      r.senderStation.toLowerCase().includes(q) || 
+      r.destStation.toLowerCase().includes(q)
+    );
+  }, [uniqueRoutes, searchQuery]);
+
   return (
     <div className="space-y-4">
-      {/* Маршрут фильтр чиплари */}
-      <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => setSelectedRoute(null)}
-          className={cn(
-            'px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
-            selectedRoute === null
-              ? 'bg-primary text-primary-foreground border-primary shadow-md'
-              : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground',
-          )}
-        >
-          Barchasi ({groups.length})
-        </button>
-        {uniqueRoutes.slice(0, 15).map(({ routeKey, count, senderStation, destStation }) => (
+      {/* Маршрут фильтр ва қидирув */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <button
-            key={routeKey}
-            onClick={() => setSelectedRoute(routeKey === selectedRoute ? null : routeKey)}
+            onClick={() => setSelectedRoute(null)}
             className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
-              selectedRoute === routeKey
+              'px-4 py-2 rounded-lg text-sm font-semibold transition-all border whitespace-nowrap',
+              selectedRoute === null
                 ? 'bg-primary text-primary-foreground border-primary shadow-md'
                 : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground',
             )}
           >
-            {senderStation} → {destStation} ({count})
+            Barchasi ({groups.length})
           </button>
-        ))}
+          
+          {/* Qidiruv (Auto-suggestion) */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Marshrutni qidirish... (masalan: Kitob)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 text-sm bg-background border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            />
+          </div>
+        </div>
+
+        {/* Barcha marshrutlar chiplari (qidiruvga qarab filtrlanadi) */}
+        <div className="flex flex-wrap gap-2 p-1">
+          {filteredRoutes.length === 0 ? (
+            <div className="text-sm text-muted-foreground py-2 px-1">Hech narsa topilmadi</div>
+          ) : (
+            filteredRoutes.map(({ routeKey, count, senderStation, destStation }) => (
+              <button
+                key={routeKey}
+                onClick={() => setSelectedRoute(routeKey === selectedRoute ? null : routeKey)}
+                className={cn(
+                  'px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
+                  selectedRoute === routeKey
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md'
+                    : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground',
+                )}
+              >
+                {senderStation} → {destStation} ({count})
+              </button>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Гуруҳ карточкалари */}
