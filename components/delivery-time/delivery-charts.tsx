@@ -354,22 +354,51 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
     const style = document.createElement('style');
     style.innerHTML = `
       @media print {
+        @page { margin: 0.8cm; }
         * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
-        body * { visibility: hidden !important; }
-        #print-chart-${chartId}, #print-chart-${chartId} * { visibility: visible !important; }
+        
+        /* Barcha ortiqcha elementlarni yashirish (Faqatgina chart va uning ota-onalari qoladi) */
+        body *:not(:has(#print-chart-${chartId})):not(#print-chart-${chartId}):not(#print-chart-${chartId} *) {
+          display: none !important;
+        }
+        
+        /* Ota-onalardagi ortiqcha padding/marginlarni olib tashlash */
+        body, html, body *:has(#print-chart-${chartId}) {
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          max-width: none !important;
+          height: auto !important;
+          background: transparent !important;
+        }
+
         #print-chart-${chartId} { 
-          position: absolute !important; 
-          left: 0 !important; 
-          top: 0 !important; 
           width: 100% !important; 
-          height: auto !important; 
           box-shadow: none !important;
           border: none !important;
+          margin: 0 !important;
         }
+        
         #print-chart-${chartId} button { display: none !important; }
+        
+        /* Sarlavha (Heading) va Marshrut ma'lumotlarini kattalashtirish */
+        #print-chart-${chartId} .pb-2 .text-sm.font-medium {
+          font-size: 1.4rem !important;
+          font-weight: 800 !important;
+          color: black !important;
+          margin-bottom: 10px !important;
+        }
+        
+        #print-chart-${chartId} .pb-2 span.text-muted-foreground {
+          font-size: 1.2rem !important;
+          font-weight: bold !important;
+          color: black !important;
+          display: block !important;
+          margin-top: 8px !important;
+        }
       }
     `;
     document.head.appendChild(style);
