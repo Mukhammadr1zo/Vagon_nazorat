@@ -354,15 +354,22 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
     const style = document.createElement('style');
     style.innerHTML = `
       @media print {
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
         body * { visibility: hidden !important; }
         #print-chart-${chartId}, #print-chart-${chartId} * { visibility: visible !important; }
         #print-chart-${chartId} { 
           position: absolute !important; 
           left: 0 !important; 
           top: 0 !important; 
-          width: 100vw !important; 
+          width: 100% !important; 
           height: auto !important; 
+          box-shadow: none !important;
+          border: none !important;
         }
+        #print-chart-${chartId} button { display: none !important; }
       }
     `;
     document.head.appendChild(style);
@@ -394,7 +401,7 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
     <>
       <div className="grid gap-4 lg:grid-cols-2">
         {/* ============ 1. Вагонлар бўйича bar chart ============ */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2" id="print-chart-wagon">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">
@@ -407,7 +414,7 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
             </div>
           </CardHeader>
           <CardContent>
-            <div id="print-chart-wagon" style={{ height: Math.max(300, group.count * 36) }}>
+            <div style={{ height: Math.max(300, group.count * 36) }}>
               {renderWagonChart(Math.max(300, group.count * 36))}
             </div>
 
@@ -424,7 +431,7 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
         </Card>
 
         {/* ============ 2. Жўнатувчилар бўйича ============ */}
-        <Card>
+        <Card id="print-chart-sender">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">
@@ -435,14 +442,14 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
             </div>
           </CardHeader>
           <CardContent>
-            <div id="print-chart-sender" style={{ height: Math.max(200, senderAgg.length * 44) }}>
+            <div style={{ height: Math.max(200, senderAgg.length * 44) }}>
               {renderSenderChart()}
             </div>
           </CardContent>
         </Card>
 
         {/* ============ 3. Давр бўйича динамика ============ */}
-        <Card>
+        <Card id="print-chart-period">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">
@@ -455,7 +462,7 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
             </div>
           </CardHeader>
           <CardContent>
-            <div id="print-chart-period" className="h-[280px]">
+            <div className="h-[280px]">
               {periodChartData.length > 0 ? (
                 renderPeriodChart()
               ) : (
@@ -468,7 +475,7 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
         </Card>
 
         {/* ============ 4. Жўнатувчилар бўйича динамика ============ */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2" id="print-chart-sender_dynamics">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-medium">
@@ -481,7 +488,7 @@ export function DeliveryCharts({ group, entries, periodData, period }: Props) {
             </div>
           </CardHeader>
           <CardContent>
-            <div id="print-chart-sender_dynamics" className="h-[350px]">
+            <div className="h-[350px]">
               {senderDynamicsData.length > 0 ? (
                 renderSenderDynamicsChart()
               ) : (
