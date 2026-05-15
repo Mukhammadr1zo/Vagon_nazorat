@@ -15,6 +15,7 @@ import {
   Activity,
   Gauge,
   Clock,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useData } from '@/lib/data-context';
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
   { href: '/cargo', label: 'Yuk turlari', sublabel: 'Грузы', icon: Package },
   { href: '/anomalies', label: 'Anomaliyalar', sublabel: 'Аномалии', icon: AlertTriangle },
   { href: '/reports', label: 'Hisobotlar', sublabel: 'Отчёты', icon: FileText },
+  { href: '/plans', label: 'Rejalar', sublabel: 'Планы / Talabnoma', icon: ClipboardList },
 ];
 
 export function SidebarNav() {
@@ -55,7 +57,10 @@ export function SidebarNav() {
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {NAV_ITEMS.map((item) => {
-          const active = pathname === item.href;
+          const active =
+            item.href === '/'
+              ? pathname === '/'
+              : pathname === item.href || pathname.startsWith(item.href + '/');
           const Icon = item.icon;
           const badge =
             item.href === '/anomalies' && anomalies.length > 0

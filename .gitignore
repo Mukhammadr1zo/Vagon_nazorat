@@ -13,3 +13,8 @@ __v0_jsx-dev-runtime.ts
 node_modules
 .next/
 .DS_Store
+
+# Large sample data files (for local analysis only)
+*.xlsx
+*.xls
+!public/samples/.gitkeep

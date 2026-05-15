@@ -18,6 +18,7 @@ import {
   FileText,
   Gauge,
   Clock,
+  ClipboardList,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
   { href: '/delivery-time', label: 'Етиб бориш', icon: Clock },
   { href: '/anomalies', label: 'Anomaliyalar', icon: AlertTriangle },
   { href: '/reports', label: 'Hisobotlar', icon: FileText },
+  { href: '/plans', label: 'Rejalar / Талабнома', icon: ClipboardList },
 ];
 
 export function MobileNav() {
@@ -55,7 +57,10 @@ export function MobileNav() {
             </div>
             <nav className="space-y-1">
               {NAV_ITEMS.map((it) => {
-                const active = pathname === it.href;
+                const active =
+                  it.href === '/'
+                    ? pathname === '/'
+                    : pathname === it.href || pathname.startsWith(it.href + '/');
                 const Icon = it.icon;
                 return (
                   <Link
