@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"/plans: %{http_code} \\(%{time_total}s\\)\\\\n\" --max-time 180 http://localhost:3002/plans)"
+    ]
+  }
+}

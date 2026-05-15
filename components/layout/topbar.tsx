@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useData } from '@/lib/data-context';
 import { MobileNav } from './mobile-nav';
+import { ThemeToggle } from './theme-toggle';
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/': { title: 'Bosh sahifa', subtitle: 'Umumiy ko\'rinish va asosiy ko\'rsatkichlar' },
@@ -18,6 +19,13 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/speed': { title: 'Tezlik tahlili', subtitle: 'Marshrut bo\'yicha yetkazib berish samaradorligi' },
   '/anomalies': { title: 'Anomaliyalar', subtitle: 'Diqqat talab qiluvchi holatlar' },
   '/reports': { title: 'Hisobotlar', subtitle: 'PDF va Excel eksport' },
+  '/plans': { title: 'Reja Tahlili', subtitle: 'RJU talabnomalari va bajarilish' },
+  '/plans/upload': { title: 'Reja faylini yuklash', subtitle: 'XLSX import' },
+  '/plans/requests': { title: 'Talabnomalar', subtitle: 'Barcha talabnomalar ro\'yxati' },
+  '/plans/stations': { title: 'Stansiyalar', subtitle: 'Stansiya bo\'yicha samaradorlik' },
+  '/plans/cargo': { title: 'Yuk turlari', subtitle: 'Yuk bo\'yicha taqsimot' },
+  '/plans/wagon-types': { title: 'Vagon turlari', subtitle: 'Vagon ta\'minlanish' },
+  '/plans/cancellations': { title: 'Bekor qilishlar', subtitle: 'Sabablar va manbalar' },
 };
 
 export function Topbar() {
@@ -83,6 +91,8 @@ export function Topbar() {
             </div>
           </>
         )}
+
+        <ThemeToggle />
       </div>
     </header>
   );

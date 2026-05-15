@@ -29,6 +29,10 @@
   --chart-3: oklch(0.65 0.16 60);
   --chart-4: oklch(0.55 0.20 330);
   --chart-5: oklch(0.62 0.20 30);
+  /* Semantik */
+  --success: oklch(0.60 0.16 165);
+  --warning: oklch(0.70 0.15 75);
+  --info: oklch(0.55 0.18 250);
   --radius: 0.625rem;
   --sidebar: oklch(0.975 0.003 250);
   --sidebar-foreground: oklch(0.20 0.01 250);
@@ -75,6 +79,10 @@
   --sidebar-accent-foreground: oklch(0.98 0.01 250);
   --sidebar-border: oklch(0.22 0.02 250);
   --sidebar-ring: oklch(0.65 0.25 250);
+  /* Dark semantik */
+  --success: oklch(0.75 0.22 160);
+  --warning: oklch(0.80 0.18 75);
+  --info: oklch(0.70 0.22 250);
 }
 
 @theme inline {
@@ -159,9 +167,70 @@
   outline-offset: 2px;
 }
 
+/* Premium gradient background utilities (rahbariyat dashboard uchun) */
+.gradient-mesh {
+  background-image:
+    radial-gradient(at 0% 0%, color-mix(in oklab, var(--primary) 12%, transparent) 0%, transparent 50%),
+    radial-gradient(at 100% 0%, color-mix(in oklab, var(--chart-2) 10%, transparent) 0%, transparent 50%),
+    radial-gradient(at 50% 100%, color-mix(in oklab, var(--chart-4) 8%, transparent) 0%, transparent 50%);
+}
+
+.gradient-card {
+  background: linear-gradient(135deg,
+    color-mix(in oklab, var(--card) 100%, transparent) 0%,
+    color-mix(in oklab, var(--accent) 30%, var(--card)) 100%);
+}
+
+/* Glass effect (modern frosted card) */
+.glass-card {
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+}
+
+/* Shimmer skeleton */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg,
+    var(--muted) 0%,
+    color-mix(in oklab, var(--muted-foreground) 8%, var(--muted)) 50%,
+    var(--muted) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Subtle pulse for live indicators */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Number tabular */
+.tabular-nums { font-variant-numeric: tabular-nums; }
+
 /* Print rejimi (hisobotlar uchun) */
 @media print {
   aside, header { display: none !important; }
   main { padding: 0 !important; }
   body { background: white !important; color: black !important; }
+  .no-print { display: none !important; }
+  .recharts-wrapper { page-break-inside: avoid; }
+}
+
+/* Reduce motion uchun */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
