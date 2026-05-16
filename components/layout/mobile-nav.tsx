@@ -23,17 +23,17 @@ import {
 
 const NAV_ITEMS = [
   { href: '/', label: 'Bosh sahifa', icon: LayoutDashboard },
+  { href: '/delivery-time', label: 'Yetib borish', icon: Clock },
+  { href: '/speed', label: 'Tezlik tahlili', icon: Gauge },
+  { href: '/plans', label: 'Rejalar / Талабнома', icon: ClipboardList },
   { href: '/upload', label: 'Yuklash', icon: Upload },
   { href: '/wagons', label: 'Vagonlar', icon: Train },
   { href: '/routes', label: 'Marshrutlar', icon: Route },
   { href: '/companies', label: 'Kompaniyalar', icon: Building2 },
   { href: '/stations', label: 'Stansiyalar', icon: TrainTrack },
   { href: '/cargo', label: 'Yuk turlari', icon: Package },
-  { href: '/speed', label: 'Tezlik tahlili', icon: Gauge },
-  { href: '/delivery-time', label: 'Етиб бориш', icon: Clock },
   { href: '/anomalies', label: 'Anomaliyalar', icon: AlertTriangle },
   { href: '/reports', label: 'Hisobotlar', icon: FileText },
-  { href: '/plans', label: 'Rejalar / Талабнома', icon: ClipboardList },
 ];
 
 export function MobileNav() {

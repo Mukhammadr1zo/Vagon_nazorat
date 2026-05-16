@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { href: '/', label: 'Bosh sahifa', sublabel: 'Дашборд', icon: LayoutDashboard },
   { href: '/delivery-time', label: 'Yetib borish', sublabel: 'Сроки доставки', icon: Clock },
   { href: '/speed', label: 'Tezlik tahlili', sublabel: 'Скорость', icon: Gauge },
+  { href: '/plans', label: 'Rejalar', sublabel: 'Планы / Talabnoma', icon: ClipboardList },
   { href: '/upload', label: "Yuklash", sublabel: 'Загрузка', icon: Upload },
   { href: '/wagons', label: 'Vagonlar', sublabel: 'Вагоны', icon: Train },
   { href: '/routes', label: 'Marshrutlar', sublabel: 'Маршруты', icon: Route },
@@ -32,7 +33,6 @@ const NAV_ITEMS = [
   { href: '/cargo', label: 'Yuk turlari', sublabel: 'Грузы', icon: Package },
   { href: '/anomalies', label: 'Anomaliyalar', sublabel: 'Аномалии', icon: AlertTriangle },
   { href: '/reports', label: 'Hisobotlar', sublabel: 'Отчёты', icon: FileText },
-  { href: '/plans', label: 'Rejalar', sublabel: 'Планы / Talabnoma', icon: ClipboardList },
 ];
 
 export function SidebarNav() {
