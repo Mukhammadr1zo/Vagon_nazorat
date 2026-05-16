@@ -149,58 +149,68 @@ export function FulfillmentChart() {
 // ============== Bekor qilish sabablari ==============
 export function CancellationReasonsChart() {
   const { cancellationReasons } = usePlanData();
-  const data = cancellationReasons.slice(0, 10).map((r) => ({
+  const data = cancellationReasons.map((r) => ({
     name: truncate(r.reason, 38),
     count: r.count,
     pct: r.percentage,
   }));
 
+  // Dinamik balandlik: har bir bar ~26px + padding
+  const chartHeight = Math.max(320, data.length * 26 + 40);
+
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">Bekor qilish sabablari (Top 10)</CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm font-medium">
+          Bekor qilish sabablari
+        </CardTitle>
+        <span className="text-[11px] text-muted-foreground tabular-nums">
+          {data.length} ta sabab
+        </span>
       </CardHeader>
       <CardContent>
-        <div className="h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="vertical" margin={{ left: 10, right: 50 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 11 }}
-                stroke="var(--muted-foreground)"
-              />
-              <YAxis
-                type="category"
-                dataKey="name"
-                width={220}
-                tick={{ fontSize: 10 }}
-                stroke="var(--muted-foreground)"
-              />
-              <Tooltip
-                contentStyle={tooltipStyle}
-                cursor={{ fill: 'var(--muted)' }}
-                formatter={(value: number) => [`${value.toLocaleString('uz-UZ')} ta`, 'Soni']}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--destructive)"
-                radius={[0, 6, 6, 0]}
-                name="Soni"
-              >
-                <LabelList
-                  dataKey="count"
-                  position="right"
-                  formatter={(v: number) => v.toLocaleString('uz-UZ')}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    fill: 'var(--foreground)',
-                  }}
+        <div>
+          <div style={{ height: chartHeight }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} layout="vertical" margin={{ left: 10, right: 50 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                <XAxis
+                  type="number"
+                  tick={{ fontSize: 11 }}
+                  stroke="var(--muted-foreground)"
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={220}
+                  tick={{ fontSize: 10 }}
+                  stroke="var(--muted-foreground)"
+                />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: 'var(--muted)' }}
+                  formatter={(value: number) => [`${value.toLocaleString('uz-UZ')} ta`, 'Soni']}
+                />
+                <Bar
+                  dataKey="count"
+                  fill="var(--destructive)"
+                  radius={[0, 6, 6, 0]}
+                  name="Soni"
+                >
+                  <LabelList
+                    dataKey="count"
+                    position="right"
+                    formatter={(v: number) => v.toLocaleString('uz-UZ')}
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      fill: 'var(--foreground)',
+                    }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -210,16 +220,27 @@ export function CancellationReasonsChart() {
 // ============== Kunlik dinamika ==============
 export function DailyDynamicsChart() {
   const { dailyDynamics } = usePlanData();
-  const data = dailyDynamics.slice(-90);
+  const data = dailyDynamics; // hamma kunlar
   const hasData = data.length > 0;
   const lastPoint = hasData ? data[data.length - 1] : null;
+  const firstPoint = hasData ? data[0] : null;
+
+  // Dinamik kenglik — har bir kun ~8px (kamida 800)
+  const chartWidth = Math.max(800, data.length * 8);
 
   return (
     <Card>
-      <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-sm font-medium">
-          Kunlik talabnomalar dinamikasi (oxirgi 90 kun)
-        </CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between flex-wrap gap-2">
+        <div>
+          <CardTitle className="text-sm font-medium">
+            Kunlik talabnomalar dinamikasi
+          </CardTitle>
+          {firstPoint && lastPoint && (
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              {firstPoint.date} → {lastPoint.date} ({data.length} kun)
+            </p>
+          )}
+        </div>
         {lastPoint && (
           <div className="text-xs text-muted-foreground tabular-nums">
             Oxirgi: <span className="font-semibold text-foreground">{lastPoint.total}</span>
@@ -227,8 +248,9 @@ export function DailyDynamicsChart() {
         )}
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="overflow-x-auto">
+          <div style={{ width: chartWidth, height: 300 }}>
+            <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 10, right: 20, bottom: 5, left: 0 }}>
               <defs>
                 <linearGradient id="dailyTotal" x1="0" y1="0" x2="0" y2="1">
@@ -284,8 +306,9 @@ export function DailyDynamicsChart() {
                 name="Bekor"
                 activeDot={{ r: 4 }}
               />
-            </LineChart>
-          </ResponsiveContainer>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -295,7 +318,7 @@ export function DailyDynamicsChart() {
 // ============== Stansiya samaradorligi ==============
 export function StationPerformanceChart() {
   const { stationStats } = usePlanData();
-  const data = stationStats.slice(0, 10).map((s) => ({
+  const data = stationStats.map((s) => ({
     name: truncate(s.stationName || s.stationCode, 22),
     total: s.total,
     fulfilled: s.fulfilled,
@@ -303,68 +326,75 @@ export function StationPerformanceChart() {
     supplyRate: s.supplyRate,
   }));
 
+  const chartHeight = Math.max(320, data.length * 26 + 60);
+
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">Top 10 stansiya (talabnomalar soni)</CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm font-medium">Stansiyalar (talabnomalar soni)</CardTitle>
+        <span className="text-[11px] text-muted-foreground tabular-nums">
+          {data.length} ta stansiya
+        </span>
       </CardHeader>
       <CardContent>
-        <div className="h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="vertical" margin={{ left: 10, right: 50 }}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="var(--border)"
-                horizontal={false}
-              />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 11 }}
-                stroke="var(--muted-foreground)"
-                tickFormatter={(v) => formatShort(v)}
-              />
-              <YAxis
-                type="category"
-                dataKey="name"
-                width={140}
-                tick={{ fontSize: 10 }}
-                stroke="var(--muted-foreground)"
-              />
-              <Tooltip
-                contentStyle={tooltipStyle}
-                cursor={{ fill: 'var(--muted)' }}
-                formatter={(value: number, name: string) => [
-                  value.toLocaleString('uz-UZ'),
-                  name,
-                ]}
-              />
-              <Legend wrapperStyle={{ fontSize: 11 }} iconType="circle" />
-              <Bar
-                dataKey="fulfilled"
-                stackId="a"
-                fill="var(--chart-2)"
-                name="Bajarilgan"
-              />
-              <Bar
-                dataKey="canceled"
-                stackId="a"
-                fill="var(--destructive)"
-                radius={[0, 6, 6, 0]}
-                name="Bekor"
-              >
-                <LabelList
-                  dataKey="total"
-                  position="right"
-                  formatter={(v: number) => v.toLocaleString('uz-UZ')}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    fill: 'var(--foreground)',
-                  }}
+        <div>
+          <div style={{ height: chartHeight }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} layout="vertical" margin={{ left: 10, right: 50 }}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--border)"
+                  horizontal={false}
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                <XAxis
+                  type="number"
+                  tick={{ fontSize: 11 }}
+                  stroke="var(--muted-foreground)"
+                  tickFormatter={(v) => formatShort(v)}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={140}
+                  tick={{ fontSize: 10 }}
+                  stroke="var(--muted-foreground)"
+                />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: 'var(--muted)' }}
+                  formatter={(value: number, name: string) => [
+                    value.toLocaleString('uz-UZ'),
+                    name,
+                  ]}
+                />
+                <Legend wrapperStyle={{ fontSize: 11 }} iconType="circle" />
+                <Bar
+                  dataKey="fulfilled"
+                  stackId="a"
+                  fill="var(--chart-2)"
+                  name="Bajarilgan"
+                />
+                <Bar
+                  dataKey="canceled"
+                  stackId="a"
+                  fill="var(--destructive)"
+                  radius={[0, 6, 6, 0]}
+                  name="Bekor"
+                >
+                  <LabelList
+                    dataKey="total"
+                    position="right"
+                    formatter={(v: number) => v.toLocaleString('uz-UZ')}
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      fill: 'var(--foreground)',
+                    }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -374,85 +404,93 @@ export function StationPerformanceChart() {
 // ============== Vagon turlari taqsimoti ==============
 export function WagonTypeChart() {
   const { wagonTypeStats } = usePlanData();
-  const data = wagonTypeStats.slice(0, 8).map((w) => ({
+  const data = wagonTypeStats.map((w) => ({
     name: truncate(w.wagonType, 30),
     requested: w.requestedWagons,
     supplied: w.suppliedWagons,
   }));
 
+  // Horizontal bar — kengligi dinamik
+  const chartWidth = Math.max(640, data.length * 80);
+
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">Vagon turlari (Top 8)</CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm font-medium">Vagon turlari</CardTitle>
+        <span className="text-[11px] text-muted-foreground tabular-nums">
+          {data.length} ta
+        </span>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 20 }}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="var(--border)"
-                vertical={false}
-              />
-              <XAxis
-                dataKey="name"
-                tick={{ fontSize: 9 }}
-                stroke="var(--muted-foreground)"
-                angle={-30}
-                textAnchor="end"
-                height={70}
-                interval={0}
-              />
-              <YAxis
-                tick={{ fontSize: 11 }}
-                stroke="var(--muted-foreground)"
-                tickFormatter={(v) => formatShort(v)}
-              />
-              <Tooltip
-                contentStyle={tooltipStyle}
-                cursor={{ fill: 'var(--muted)' }}
-                formatter={(value: number, name: string) => [
-                  value.toLocaleString('uz-UZ'),
-                  name,
-                ]}
-              />
-              <Legend wrapperStyle={{ fontSize: 11 }} iconType="circle" />
-              <Bar
-                dataKey="requested"
-                fill="var(--chart-1)"
-                name="Talab qilingan"
-                radius={[4, 4, 0, 0]}
-              >
-                <LabelList
+        <div className="overflow-x-auto">
+          <div style={{ width: chartWidth, height: 320 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} margin={{ top: 20 }}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--border)"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 9 }}
+                  stroke="var(--muted-foreground)"
+                  angle={-30}
+                  textAnchor="end"
+                  height={70}
+                  interval={0}
+                />
+                <YAxis
+                  tick={{ fontSize: 11 }}
+                  stroke="var(--muted-foreground)"
+                  tickFormatter={(v) => formatShort(v)}
+                />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: 'var(--muted)' }}
+                  formatter={(value: number, name: string) => [
+                    value.toLocaleString('uz-UZ'),
+                    name,
+                  ]}
+                />
+                <Legend wrapperStyle={{ fontSize: 11 }} iconType="circle" />
+                <Bar
                   dataKey="requested"
-                  position="top"
-                  formatter={(v: number) => formatShort(v)}
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    fill: 'var(--chart-1)',
-                  }}
-                />
-              </Bar>
-              <Bar
-                dataKey="supplied"
-                fill="var(--chart-2)"
-                name="Ta'minlangan"
-                radius={[4, 4, 0, 0]}
-              >
-                <LabelList
+                  fill="var(--chart-1)"
+                  name="Talab qilingan"
+                  radius={[4, 4, 0, 0]}
+                >
+                  <LabelList
+                    dataKey="requested"
+                    position="top"
+                    formatter={(v: number) => formatShort(v)}
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 600,
+                      fill: 'var(--chart-1)',
+                    }}
+                  />
+                </Bar>
+                <Bar
                   dataKey="supplied"
-                  position="top"
-                  formatter={(v: number) => formatShort(v)}
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    fill: 'var(--chart-2)',
-                  }}
-                />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                  fill="var(--chart-2)"
+                  name="Ta'minlangan"
+                  radius={[4, 4, 0, 0]}
+                >
+                  <LabelList
+                    dataKey="supplied"
+                    position="top"
+                    formatter={(v: number) => formatShort(v)}
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 600,
+                      fill: 'var(--chart-2)',
+                    }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -462,57 +500,68 @@ export function WagonTypeChart() {
 // ============== Yuk turlari ==============
 export function CargoTypeChart() {
   const { cargoStats } = usePlanData();
-  const data = cargoStats.slice(0, 6).map((c) => ({
+  const data = cargoStats.map((c) => ({
     name: truncate(c.cargoName || c.cargoCode, 28),
     value: c.total,
   }));
   const total = data.reduce((s, d) => s + d.value, 0);
 
+  const chartHeight = Math.max(280, data.length * 24 + 40);
+
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">Top 6 yuk turi</CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm font-medium">Yuk turlari</CardTitle>
+        <div className="text-[11px] text-muted-foreground tabular-nums">
+          {data.length} ta | jami {total.toLocaleString('uz-UZ')}
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px] relative">
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-            <div className="text-[10px] uppercase text-muted-foreground tracking-wider">Jami</div>
-            <div className="text-2xl font-bold tabular-nums">{total.toLocaleString('uz-UZ')}</div>
-          </div>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={100}
-                innerRadius={55}
-                paddingAngle={2}
-                labelLine={false}
-                label={renderPieLabel}
-              >
-                {data.map((_, i) => (
-                  <Cell
-                    key={i}
-                    fill={COLORS[i % COLORS.length]}
-                    stroke="var(--background)"
-                    strokeWidth={2}
+        <div>
+          <div style={{ height: chartHeight }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} layout="vertical" margin={{ left: 10, right: 50 }}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--border)"
+                  horizontal={false}
+                />
+                <XAxis
+                  type="number"
+                  tick={{ fontSize: 11 }}
+                  stroke="var(--muted-foreground)"
+                  tickFormatter={(v) => formatShort(v)}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={180}
+                  tick={{ fontSize: 10 }}
+                  stroke="var(--muted-foreground)"
+                />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  cursor={{ fill: 'var(--muted)' }}
+                  formatter={(value: number) => [`${value.toLocaleString('uz-UZ')} ta`, 'Soni']}
+                />
+                <Bar dataKey="value" radius={[0, 6, 6, 0]} name="Soni">
+                  {data.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                  <LabelList
+                    dataKey="value"
+                    position="right"
+                    formatter={(v: number) => v.toLocaleString('uz-UZ')}
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      fill: 'var(--foreground)',
+                    }}
                   />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={tooltipStyle}
-                formatter={(value: number, name: string) => [
-                  `${value.toLocaleString('uz-UZ')} ta`,
-                  name,
-                ]}
-              />
-              <Legend
-                wrapperStyle={{ fontSize: 10, paddingTop: 8 }}
-                iconType="circle"
-              />
-            </PieChart>
-          </ResponsiveContainer>
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -310,7 +310,7 @@ export function calculateDailyDynamics(records: PlanRecord[]): DailyPointStat[] 
 // =====================================================
 // Tasdiqlovchilar
 // =====================================================
-export function calculateApproverStats(records: PlanRecord[], topN = 15): ApproverStat[] {
+export function calculateApproverStats(records: PlanRecord[], topN?: number): ApproverStat[] {
   const valid = records.filter((r) => !r.hasDataQualityIssue);
   const map = new Map<string, ApproverStat>();
 
@@ -326,7 +326,8 @@ export function calculateApproverStats(records: PlanRecord[], topN = 15): Approv
     if (r.status === 'canceled') a.canceled++;
   }
 
-  return Array.from(map.values()).sort((a, b) => b.total - a.total).slice(0, topN);
+  const sortedApprovers = Array.from(map.values()).sort((a, b) => b.total - a.total);
+  return topN ? sortedApprovers.slice(0, topN) : sortedApprovers;
 }
 
 // =====================================================
