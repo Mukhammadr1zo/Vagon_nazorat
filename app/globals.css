@@ -3,37 +3,46 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Enterprise — Toza Light Theme (rahbariyat uchun) */
+/* =====================================================
+   O'zbekiston Temir Yo'llari brand palitra
+   Primary: #1B5BA8 (UzRail Blue), Accent: #C8102E (Signal Red)
+   ===================================================== */
 :root {
-  --background: oklch(0.985 0.002 250);
-  --foreground: oklch(0.20 0.01 250);
+  --background: oklch(0.985 0.003 240);
+  --foreground: oklch(0.18 0.015 240);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.01 250);
+  --card-foreground: oklch(0.16 0.015 240);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.01 250);
-  --primary: oklch(0.52 0.18 250);
+  --popover-foreground: oklch(0.16 0.015 240);
+  /* UzRail Blue #1B5BA8 */
+  --primary: oklch(0.45 0.15 252);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.005 250);
-  --secondary-foreground: oklch(0.25 0.02 250);
-  --muted: oklch(0.96 0.005 250);
-  --muted-foreground: oklch(0.50 0.015 250);
-  --accent: oklch(0.95 0.01 250);
-  --accent-foreground: oklch(0.25 0.02 250);
-  --destructive: oklch(0.58 0.22 25);
+  --secondary: oklch(0.96 0.008 240);
+  --secondary-foreground: oklch(0.22 0.02 240);
+  --muted: oklch(0.96 0.005 240);
+  --muted-foreground: oklch(0.48 0.015 240);
+  --accent: oklch(0.94 0.01 240);
+  --accent-foreground: oklch(0.22 0.02 240);
+  /* Signal Red #C8102E */
+  --destructive: oklch(0.54 0.22 24);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.91 0.005 250);
-  --input: oklch(0.91 0.005 250);
-  --ring: oklch(0.52 0.18 250);
-  --chart-1: oklch(0.55 0.18 250);
-  --chart-2: oklch(0.60 0.16 165);
-  --chart-3: oklch(0.65 0.16 60);
-  --chart-4: oklch(0.55 0.20 330);
-  --chart-5: oklch(0.62 0.20 30);
+  --border: oklch(0.90 0.006 240);
+  --input: oklch(0.90 0.006 240);
+  --ring: oklch(0.45 0.15 252);
+  /* Chart ranglari — temir yo'l semaforidan ilhom (mavi/yashil/sariq/qizil/binafsha) */
+  --chart-1: oklch(0.48 0.16 252);  /* UzRail blue */
+  --chart-2: oklch(0.58 0.16 158);  /* Signal green */
+  --chart-3: oklch(0.72 0.16 70);   /* Amber */
+  --chart-4: oklch(0.55 0.22 320);  /* Magenta */
+  --chart-5: oklch(0.62 0.20 35);   /* Orange */
   /* Semantik */
-  --success: oklch(0.60 0.16 165);
-  --warning: oklch(0.70 0.15 75);
-  --info: oklch(0.55 0.18 250);
-  --radius: 0.625rem;
+  --success: oklch(0.58 0.16 158);
+  --warning: oklch(0.72 0.16 70);
+  --info: oklch(0.48 0.16 252);
+  /* Brand accent */
+  --brand-red: oklch(0.54 0.22 24);
+  --brand-blue: oklch(0.45 0.15 252);
+  --radius: 0.5rem;
   --sidebar: oklch(0.975 0.003 250);
   --sidebar-foreground: oklch(0.20 0.01 250);
   --sidebar-primary: oklch(0.52 0.18 250);
@@ -44,49 +53,49 @@
   --sidebar-ring: oklch(0.52 0.18 250);
 }
 
-/* Dark theme - Premium mode for Railway Analytics */
+/* Dark theme — UzRailway Premium */
 .dark {
-  --background: oklch(0.14 0.01 250);
-  --foreground: oklch(0.98 0.01 250);
-  --card: oklch(0.18 0.015 250);
-  --card-foreground: oklch(0.98 0.01 250);
-  --popover: oklch(0.18 0.015 250);
-  --popover-foreground: oklch(0.98 0.01 250);
-  --primary: oklch(0.65 0.25 250);
-  --primary-foreground: oklch(0.1 0 0);
-  --secondary: oklch(0.2 0.02 250);
-  --secondary-foreground: oklch(0.98 0.01 250);
-  --muted: oklch(0.18 0.02 250);
-  --muted-foreground: oklch(0.65 0.02 250);
-  --accent: oklch(0.2 0.02 250);
-  --accent-foreground: oklch(0.98 0.01 250);
-  --destructive: oklch(0.6 0.25 25);
+  --background: oklch(0.13 0.012 240);
+  --foreground: oklch(0.97 0.01 240);
+  --card: oklch(0.17 0.015 240);
+  --card-foreground: oklch(0.97 0.01 240);
+  --popover: oklch(0.17 0.015 240);
+  --popover-foreground: oklch(0.97 0.01 240);
+  --primary: oklch(0.62 0.20 252);
+  --primary-foreground: oklch(0.10 0 0);
+  --secondary: oklch(0.20 0.02 240);
+  --secondary-foreground: oklch(0.97 0.01 240);
+  --muted: oklch(0.18 0.02 240);
+  --muted-foreground: oklch(0.66 0.02 240);
+  --accent: oklch(0.22 0.025 240);
+  --accent-foreground: oklch(0.97 0.01 240);
+  --destructive: oklch(0.62 0.24 24);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.22 0.02 250);
-  --input: oklch(0.2 0.02 250);
-  --ring: oklch(0.65 0.25 250);
-  /* Premium vibrant chart colors */
-  --chart-1: oklch(0.7 0.22 250);
-  --chart-2: oklch(0.75 0.22 160);
-  --chart-3: oklch(0.8 0.2 60);
-  --chart-4: oklch(0.7 0.25 330);
-  --chart-5: oklch(0.75 0.25 30);
-  --sidebar: oklch(0.12 0.01 250);
-  --sidebar-foreground: oklch(0.98 0.01 250);
-  --sidebar-primary: oklch(0.65 0.25 250);
-  --sidebar-primary-foreground: oklch(0.1 0 0);
-  --sidebar-accent: oklch(0.2 0.02 250);
-  --sidebar-accent-foreground: oklch(0.98 0.01 250);
-  --sidebar-border: oklch(0.22 0.02 250);
-  --sidebar-ring: oklch(0.65 0.25 250);
-  /* Dark semantik */
-  --success: oklch(0.75 0.22 160);
-  --warning: oklch(0.80 0.18 75);
-  --info: oklch(0.70 0.22 250);
+  --border: oklch(0.24 0.02 240);
+  --input: oklch(0.20 0.02 240);
+  --ring: oklch(0.62 0.20 252);
+  --chart-1: oklch(0.68 0.20 252);
+  --chart-2: oklch(0.74 0.20 158);
+  --chart-3: oklch(0.82 0.18 70);
+  --chart-4: oklch(0.70 0.22 320);
+  --chart-5: oklch(0.74 0.22 35);
+  --sidebar: oklch(0.10 0.012 240);
+  --sidebar-foreground: oklch(0.97 0.01 240);
+  --sidebar-primary: oklch(0.62 0.20 252);
+  --sidebar-primary-foreground: oklch(0.10 0 0);
+  --sidebar-accent: oklch(0.20 0.02 240);
+  --sidebar-accent-foreground: oklch(0.97 0.01 240);
+  --sidebar-border: oklch(0.24 0.02 240);
+  --sidebar-ring: oklch(0.62 0.20 252);
+  --success: oklch(0.74 0.20 158);
+  --warning: oklch(0.82 0.18 70);
+  --info: oklch(0.68 0.20 252);
+  --brand-red: oklch(0.62 0.24 24);
+  --brand-blue: oklch(0.62 0.20 252);
 }
 
 @theme inline {
-  --font-sans: var(--font-outfit), 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-sans: var(--font-manrope), 'Manrope', 'Inter', system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -217,13 +226,78 @@
 /* Number tabular */
 .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* Print rejimi (hisobotlar uchun) */
+/* =====================================================
+   Print rejimi — Professional PDF hisobot
+   ===================================================== */
 @media print {
-  aside, header { display: none !important; }
-  main { padding: 0 !important; }
-  body { background: white !important; color: black !important; }
-  .no-print { display: none !important; }
-  .recharts-wrapper { page-break-inside: avoid; }
+  @page {
+    size: A4 portrait;
+    margin: 15mm 12mm 18mm 12mm;
+  }
+
+  aside,
+  header,
+  .no-print,
+  button:not(.print-show),
+  [role="dialog"],
+  .filter-panel-print-hide {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Kartochkalarni soddalashtirish */
+  .recharts-wrapper {
+    page-break-inside: avoid;
+  }
+
+  /* Kartochkalar — chegaralangan, soyalarsiz */
+  [class*="rounded"][class*="card"],
+  [class*="Card"] {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    break-inside: avoid;
+  }
+
+  /* Chiqarmaslik kerak bo'lgan elementlar */
+  .pulse-soft,
+  .gradient-mesh,
+  .gradient-card {
+    background: white !important;
+    animation: none !important;
+  }
+
+  /* Sahifa sarlavhalari */
+  h1, h2, h3 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+
+  /* Print uchun sarlavha (faqat print rejimida ko'rinadi) */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Linklar matn rangida */
+  a, a:visited {
+    color: black !important;
+    text-decoration: none !important;
+  }
+}
+
+/* Print uchun maxsus elementlar default'da yashirin */
+.print-only {
+  display: none;
 }
 
 /* Reduce motion uchun */

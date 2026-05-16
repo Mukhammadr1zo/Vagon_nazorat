@@ -14,11 +14,13 @@ import {
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { usePlanData } from '@/lib/plans/plan-context';
-import { PlanKPICards } from '@/components/plans/plan-kpi-cards';
+import { PlanKPIBento } from '@/components/plans/plan-kpi-bento';
 import { SheetTabs } from '@/components/plans/sheet-tabs';
 import { PlanAnomaliesPanel } from '@/components/plans/plan-anomalies-panel';
 import { PlanFiltersPanel } from '@/components/plans/plan-filters-panel';
 import { ExecutiveInsights } from '@/components/plans/executive-insights';
+import { WelcomeModal } from '@/components/plans/welcome-modal';
+import { ExportActions } from '@/components/plans/export-actions';
 import { PlanDashboardSkeleton } from '@/components/plans/plan-skeletons';
 import {
   FulfillmentChart,
@@ -82,6 +84,8 @@ export default function PlansDashboardPage() {
       variants={staggerContainer(0.05, 0.08)}
       className="space-y-6"
     >
+      <WelcomeModal />
+
       <motion.div
         variants={slideUp}
         className="flex flex-col md:flex-row md:items-center md:justify-between gap-3"
@@ -100,6 +104,7 @@ export default function PlansDashboardPage() {
           <NavButton href="/plans/wagon-types" icon={Train} label="Vagon turlari" />
           <NavButton href="/plans/cancellations" icon={XCircle} label="Bekor qilingan" />
           <NavButton href="/plans/upload" icon={Upload} label="Yangi fayl" />
+          <ExportActions />
         </div>
       </motion.div>
 
@@ -111,7 +116,7 @@ export default function PlansDashboardPage() {
       <ExecutiveInsights />
 
       <motion.div variants={cardVariants}>
-        <PlanKPICards />
+        <PlanKPIBento />
       </motion.div>
 
       <motion.div variants={staggerContainer(0.1, 0.1)} className="grid gap-4 lg:grid-cols-2">

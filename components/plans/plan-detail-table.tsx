@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { ArrowUpDown, Search } from 'lucide-react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ export function PlanDetailTable<T extends { [k: string]: any }>({
   const [sortKey, setSortKey] = useState<string | null>(defaultSortKey ?? null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(0);
+  const [tbodyRef] = useAutoAnimate<HTMLTableSectionElement>({ duration: 250 });
 
   const filtered = useMemo(() => {
     if (!search || searchFields.length === 0) return rows;
@@ -162,7 +164,7 @@ export function PlanDetailTable<T extends { [k: string]: any }>({
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody ref={tbodyRef}>
             {pageRows.length === 0 && (
               <tr>
                 <td

@@ -12,13 +12,13 @@ import {
   Package,
   AlertTriangle,
   FileText,
-  Activity,
   Gauge,
   Clock,
   ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useData } from '@/lib/data-context';
+import { BrandLogo } from '@/components/shared/brand-logo';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Bosh sahifa', sublabel: 'Дашборд', icon: LayoutDashboard },
@@ -44,12 +44,12 @@ export function SidebarNav() {
       {/* Brand */}
       <div className="px-5 py-5 border-b border-sidebar-border">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="size-10 rounded-xl bg-gradient-to-br from-primary to-chart-2 grid place-items-center shadow-md">
-            <Activity className="size-5 text-primary-foreground" />
-          </div>
+          <BrandLogo size={42} className="shadow-sm rounded-xl transition-transform group-hover:scale-105" />
           <div className="leading-tight">
-            <div className="text-sm font-semibold">Vagon Nazorat</div>
-            <div className="text-[11px] text-muted-foreground">Enterprise Analytics</div>
+            <div className="text-[15px] font-bold tracking-tight">Vagon Nazorat</div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">
+              UzRail Analytics
+            </div>
           </div>
         </Link>
       </div>
