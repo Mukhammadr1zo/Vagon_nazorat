@@ -18,6 +18,8 @@ export interface PlanInsight {
   metric: string;
   trend?: 'up' | 'down' | 'stable';
   priority: number; // 1-10, yuqori = muhimroq
+  /** Tegishli yozuvlar (drill-down uchun) */
+  recordFilter?: (r: PlanRecord) => boolean;
 }
 
 // =====================================================
@@ -60,6 +62,7 @@ export function generatePlanInsights(
       metric: `${kpis.canceledCount.toLocaleString()} ta bekor`,
       trend: 'up',
       priority: 10,
+      recordFilter: (r) => r.status === 'canceled',
     });
   } else if (kpis.cancellationRatePercent >= THRESHOLDS.CANCELLATION_WARNING) {
     insights.push({
@@ -71,6 +74,7 @@ export function generatePlanInsights(
       recommendation: 'Bekor qilish sabablarini guruhlab tahlil qiling — eng yirik 3 sababga e\'tibor qarating.',
       metric: `${kpis.cancellationRatePercent.toFixed(1)}%`,
       priority: 7,
+      recordFilter: (r) => r.status === 'canceled',
     });
   } else if (kpis.cancellationRatePercent < 5 && kpis.totalRequests > 100) {
     insights.push({
@@ -95,9 +99,10 @@ export function generatePlanInsights(
       title: `Vagon ta'minlanish darajasi past: ${kpis.supplyRatePercent.toFixed(1)}%`,
       description: `${gap.toLocaleString()} ta vagon yetishmadi. Bu yuk jo'natuvchilar uchun jiddiy muammo.`,
       recommendation: 'Vagon parki yetishmaslik sabablarini aniqlang. Eng ko\'p talab qilingan vagon turi yuzasidan tezkor harakat kerak.',
-      metric: `${kpis.totalSuppliedWagons.toLocaleString()} / ${kpis.totalRequestedWagons.toLocaleString()}`,
+      metric: `${kpis.totalSuppliedWagons.toLocaleString()} / ${kpis.totalRequestedWagons.toLocaleString()} vagon`,
       trend: 'down',
       priority: 10,
+      recordFilter: (r) => r.remainingCount > 0 && !r.hasDataQualityIssue,
     });
   } else if (kpis.supplyRatePercent < THRESHOLDS.SUPPLY_RATE_WARNING) {
     insights.push({
@@ -109,6 +114,7 @@ export function generatePlanInsights(
       recommendation: 'Eng kam ta\'minlanayotgan vagon turi va stansiyalarni aniqlang.',
       metric: `${kpis.supplyRatePercent.toFixed(1)}%`,
       priority: 6,
+      recordFilter: (r) => r.remainingCount > 0 && !r.hasDataQualityIssue,
     });
   } else if (kpis.supplyRatePercent >= 95) {
     insights.push({
@@ -138,6 +144,7 @@ export function generatePlanInsights(
       metric: `${kpis.avgApprovalLatencyDays.toFixed(1)} kun`,
       trend: 'up',
       priority: 9,
+      recordFilter: (r) => r.approvalLatencyDays !== null && r.approvalLatencyDays > THRESHOLDS.APPROVAL_DAYS_CRITICAL,
     });
   } else if (
     kpis.avgApprovalLatencyDays !== null &&
@@ -152,6 +159,7 @@ export function generatePlanInsights(
       recommendation: 'Tasdiqlovchi shaxslar bo\'yicha taqsimot va eng sekin bo\'g\'imlarni aniqlang.',
       metric: `${kpis.avgApprovalLatencyDays.toFixed(1)} kun`,
       priority: 5,
+      recordFilter: (r) => r.approvalLatencyDays !== null && r.approvalLatencyDays > THRESHOLDS.APPROVAL_DAYS_WARNING,
     });
   }
 
@@ -179,6 +187,7 @@ export function generatePlanInsights(
 
   if (problemStations.length > 0) {
     const top = problemStations[0];
+    const problemStationKeys = new Set(problemStations.map((s) => s.name));
     insights.push({
       id: 'station-cancel-hotspot',
       severity: 'critical',
@@ -190,6 +199,7 @@ export function generatePlanInsights(
         .join(', ')}`,
       metric: `${top.rate.toFixed(1)}%`,
       priority: 9,
+      recordFilter: (r) => r.status === 'canceled' && problemStationKeys.has(r.stationRaw),
     });
   }
 
@@ -204,6 +214,7 @@ export function generatePlanInsights(
     const topCargo = sortedCargos[0];
     const topShare = (topCargo[1] / valid.length) * 100;
     if (topShare >= THRESHOLDS.CARGO_CONCENTRATION_THRESHOLD) {
+      const topCargoKey = topCargo[0];
       insights.push({
         id: 'cargo-concentration',
         severity: 'warning',
@@ -213,6 +224,7 @@ export function generatePlanInsights(
         recommendation: 'Diversifikatsiya strategiyasini ko\'rib chiqing — bu yuk turida muammo bo\'lsa, butun biznes ta\'sirlanadi.',
         metric: `${topShare.toFixed(1)}%`,
         priority: 6,
+        recordFilter: (r) => r.cargoRaw === topCargoKey,
       });
     }
   }
@@ -230,6 +242,7 @@ export function generatePlanInsights(
       recommendation: 'Manbada Excel shablonini standartlashtiring. Bu qatorlar tahlilga kiritilmagan.',
       metric: `${issueRate.toFixed(2)}%`,
       priority: issueRate > 5 ? 5 : 3,
+      recordFilter: (r) => r.hasDataQualityIssue,
     });
   }
 

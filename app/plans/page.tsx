@@ -18,7 +18,6 @@ import { PlanKPIBento } from '@/components/plans/plan-kpi-bento';
 import { SheetTabs } from '@/components/plans/sheet-tabs';
 import { PlanAnomaliesPanel } from '@/components/plans/plan-anomalies-panel';
 import { PlanFiltersPanel } from '@/components/plans/plan-filters-panel';
-import { ExecutiveInsights } from '@/components/plans/executive-insights';
 import { WelcomeModal } from '@/components/plans/welcome-modal';
 import { ExportActions } from '@/components/plans/export-actions';
 import { PlanDashboardSkeleton } from '@/components/plans/plan-skeletons';
@@ -112,9 +111,6 @@ export default function PlansDashboardPage() {
         <PlanFiltersPanel />
       </motion.div>
 
-      {/* RAHBARIYAT UCHUN — Asosiy xulosa va tavsiyalar */}
-      <ExecutiveInsights />
-
       <motion.div variants={cardVariants}>
         <PlanKPIBento />
       </motion.div>
@@ -138,13 +134,12 @@ export default function PlansDashboardPage() {
         <DailyDynamicsChart />
       </motion.div>
 
-      <motion.div variants={staggerContainer(0.1, 0.1)} className="grid gap-4 lg:grid-cols-2">
-        <motion.div variants={cardVariants}>
-          <StationPerformanceChart />
-        </motion.div>
-        <motion.div variants={cardVariants}>
-          <PlanAnomaliesPanel />
-        </motion.div>
+      <motion.div variants={cardVariants}>
+        <StationPerformanceChart />
+      </motion.div>
+
+      <motion.div variants={cardVariants}>
+        <PlanAnomaliesPanel />
       </motion.div>
     </motion.div>
   );

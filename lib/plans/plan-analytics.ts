@@ -337,7 +337,7 @@ export function calculatePlanAnomalies(records: PlanRecord[]): PlanAnomaly[] {
   const anomalies: PlanAnomaly[] = [];
   const valid = records.filter((r) => !r.hasDataQualityIssue);
 
-  // Uzoq tasdiqlash (> 14 kun)
+  // Uzoq tasdiqlash (> 14 kun) — BARCHA yozuvlar
   const longApproval = valid.filter((r) => r.approvalLatencyDays !== null && r.approvalLatencyDays > 14);
   if (longApproval.length > 0) {
     anomalies.push({
@@ -346,12 +346,12 @@ export function calculatePlanAnomalies(records: PlanRecord[]): PlanAnomaly[] {
       severity: longApproval.length > 100 ? 'high' : longApproval.length > 20 ? 'medium' : 'low',
       title: 'Uzoq tasdiqlash',
       description: `${longApproval.length.toLocaleString()} ta talabnoma 14 kundan ortiq tasdiqlangan`,
-      relatedRecordIds: longApproval.slice(0, 50).map((r) => r.id),
+      relatedRecordIds: longApproval.map((r) => r.id),
       metric: longApproval.length,
     });
   }
 
-  // Uzoq yetkazib berish (> 10 kun)
+  // Uzoq yetkazib berish (> 10 kun) — BARCHA
   const longDelivery = valid.filter((r) => r.deliveryLatencyDays !== null && r.deliveryLatencyDays > 10);
   if (longDelivery.length > 0) {
     anomalies.push({
@@ -360,24 +360,31 @@ export function calculatePlanAnomalies(records: PlanRecord[]): PlanAnomaly[] {
       severity: longDelivery.length > 1000 ? 'high' : longDelivery.length > 100 ? 'medium' : 'low',
       title: 'Uzoq yetkazish',
       description: `${longDelivery.length.toLocaleString()} ta vagon 10 kundan ortiq vaqtda yetib borgan`,
-      relatedRecordIds: longDelivery.slice(0, 50).map((r) => r.id),
+      relatedRecordIds: longDelivery.map((r) => r.id),
       metric: longDelivery.length,
     });
   }
 
   // Tez-tez bekor qiluvchi stansiyalar
   const cancelByStation = new Map<string, number>();
+  const cancelRecordsByStation = new Map<string, string[]>();
   for (const r of valid) {
     if (r.status === 'canceled' && r.stationRaw) {
       cancelByStation.set(r.stationRaw, (cancelByStation.get(r.stationRaw) ?? 0) + 1);
+      const list = cancelRecordsByStation.get(r.stationRaw) ?? [];
+      list.push(r.id);
+      cancelRecordsByStation.set(r.stationRaw, list);
     }
   }
   const frequentCancelers = Array.from(cancelByStation.entries())
     .filter(([, n]) => n > 50)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
+    .sort((a, b) => b[1] - a[1]);
 
   if (frequentCancelers.length > 0) {
+    // Tegishli barcha bekor qilishlar
+    const allRelated = frequentCancelers.flatMap(
+      ([station]) => cancelRecordsByStation.get(station) ?? [],
+    );
     anomalies.push({
       id: 'frequent-cancel',
       type: 'frequent-cancel',
@@ -387,12 +394,12 @@ export function calculatePlanAnomalies(records: PlanRecord[]): PlanAnomaly[] {
         .slice(0, 3)
         .map(([s, n]) => `${s} (${n})`)
         .join(', ')}`,
-      relatedRecordIds: [],
+      relatedRecordIds: allRelated,
       metric: frequentCancelers.length,
     });
   }
 
-  // Ma'lumot sifati
+  // Ma'lumot sifati — BARCHA
   const qualityIssues = records.filter((r) => r.hasDataQualityIssue);
   if (qualityIssues.length > 0) {
     anomalies.push({
@@ -401,7 +408,7 @@ export function calculatePlanAnomalies(records: PlanRecord[]): PlanAnomaly[] {
       severity: qualityIssues.length > 1000 ? 'high' : qualityIssues.length > 100 ? 'medium' : 'low',
       title: 'Ma\'lumot sifati muammolari',
       description: `${qualityIssues.length.toLocaleString()} qatorda ustun siljishi aniqlandi`,
-      relatedRecordIds: qualityIssues.slice(0, 50).map((r) => r.id),
+      relatedRecordIds: qualityIssues.map((r) => r.id),
       metric: qualityIssues.length,
     });
   }
